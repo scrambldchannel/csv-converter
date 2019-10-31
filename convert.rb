@@ -41,8 +41,7 @@ end
 CSV.open(info_outfile, "wb") do |csv|
   csv << [
     'match_id',
-    'csv_version',
-    'yaml_version',
+    'format',
     'home_team',
     'away_team',
     'gender',
@@ -66,8 +65,7 @@ CSV.open(info_outfile, "wb") do |csv|
 
   csv << [
     match,
-    VERSION,
-    yaml['meta']['version'],
+    yaml['meta']['match_type'],
     yaml['info']['teams'][0],
     yaml['info']['teams'][1],
     yaml['info']['gender'],
@@ -107,6 +105,7 @@ CSV.open(info_outfile, "wb") do |csv|
     else
       ''
     end,
+    '',
     if yaml['info']['outcome'].key?('winner')
       yaml['info']['outcome']['winner']
     else
