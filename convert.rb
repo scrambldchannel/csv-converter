@@ -113,6 +113,21 @@ end
 #  Write the deliveries csv file
 CSV.open(deliveries_outfile, "wb") do |csv|
 
+  # write header row
+  csv << [
+    'innings',
+    'ball',
+    'batting_team',
+    'batter',
+    'non_striker',
+    'bowler',
+    'batter_runs',
+    'extra_runs',
+    'how_out',
+    'batter_out'
+  ]
+
+
   # Now deal with the innings.
   yaml['innings'].each_with_index do |inning, inning_no|
     inning.each_pair do |inning_name, inning_data|
