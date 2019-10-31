@@ -8,25 +8,38 @@ VERSION = '1.2.0'
 # Which file are we converting?
 file = ARGV[0] || exit
 
+# Assuming the input was a valid yaml file, build file names for the output files
+info_outfile = file.split('.')[0].concat('_info.csv')
+deliveries_outfile = file.split('.')[0].concat('_deliveries.csv')
+
 # Load the yaml file.
 yaml = YAML.load_file(file)
 
+# helper function definitions
+
+# returns the wicket array if relevant for the given delivery
 def dismissals_for(delivery)
   delivery['wicket'].is_a?(Array) ? delivery['wicket'] : [delivery['wicket']]
 end
 
+# if a wicket happened, return the kind of dismissal(s)
 def dismissal_methods_for(delivery)
   return '' unless delivery.key?('wicket')
   dismissals_for(delivery).map { |dismissal| dismissal['kind'] }.join(', ')
 end
 
+# if a wicket happened, return the dismissed batter(s)
 def dismissed_players_for(delivery)
   return '' unless delivery.key?('wicket')
   dismissals_for(delivery).map { |dismissal| dismissal['player_out'] }.join(', ')
 end
 
-# Generate the csv.
-csv_string = CSV.generate do |csv|
+# Write the info csv file
+# I might change this to output a fixed set of columns but doing this for now
+
+CSV.open(info_outfile, "wb") do |csv|
+
+  # write the version line 
   csv << ['version', VERSION]
 
   # Add the info section.
@@ -36,7 +49,9 @@ csv_string = CSV.generate do |csv|
   csv << ['info', 'gender', yaml['info']['gender']]
 
   yaml['info']['dates'].each do |date|
-    csv << ['info', 'date', date.strftime("%Y/%m/%d")]
+    # This failed for me so I've changed to simply output the date string
+    # csv << ['info', 'date', date.strftime("%Y/%m/%d")]
+    csv << ['info', 'date', date]
   end
 
   if yaml['info'].key?('competition')
@@ -93,6 +108,11 @@ csv_string = CSV.generate do |csv|
     end
   end
 
+end
+
+#  Write the deliveries csv file
+CSV.open(deliveries_outfile, "wb") do |csv|
+
   # Now deal with the innings.
   yaml['innings'].each_with_index do |inning, inning_no|
     inning.each_pair do |inning_name, inning_data|
@@ -127,5 +147,3 @@ csv_string = CSV.generate do |csv|
     end
   end
 end
-
-puts csv_string
