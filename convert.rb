@@ -65,7 +65,7 @@ CSV.open(info_outfile, "wb") do |csv|
 
   csv << [
     match,
-    yaml['meta']['match_type'],
+    yaml['info']['match_type'],
     yaml['info']['teams'][0],
     yaml['info']['teams'][1],
     yaml['info']['gender'],
@@ -100,10 +100,11 @@ CSV.open(info_outfile, "wb") do |csv|
     else
       ''
     end,
-    if yaml['info']['outcome'].key?('result')
-      yaml['info']['outcome']['result']
+    if yaml['info']['outcome'].key?('winner')
+      'won'
     else
-      ''
+      # obviously needs to be updated to handle other result types 
+      'drawn'
     end,
     '',
     if yaml['info']['outcome'].key?('winner')
@@ -112,14 +113,15 @@ CSV.open(info_outfile, "wb") do |csv|
       ''
     end,
     if yaml['info']['outcome'].key?('by')
-      yaml['info']['outcome']['by']
+      if yaml['info']['outcome']['by'].key?('runs')
+        yaml['info']['outcome']['by']['runs']
+      elsif yaml['info']['outcome']['by'].key?('wickets')
+        yaml['info']['outcome']['by']['wickets']
+      end
     else
       ''
     end
-
     ]
-
-
 end
 
 #  Write the deliveries csv file
