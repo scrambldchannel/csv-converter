@@ -7,10 +7,14 @@ VERSION = '1.2.0'
 
 # Which file are we converting?
 file = ARGV[0] || exit
+match = file.split('.')[0]
+
 
 # Assuming the input was a valid yaml file, build file names for the output files
-info_outfile = file.split('.')[0].concat('_info.csv')
-deliveries_outfile = file.split('.')[0].concat('_deliveries.csv')
+info_outfile = match + '_info.csv'
+deliveries_outfile = match + '_deliveries.csv'
+
+puts deliveries_outfile
 
 # Load the yaml file.
 yaml = YAML.load_file(file)
@@ -39,6 +43,7 @@ end
 
 CSV.open(info_outfile, "wb") do |csv|
   csv << [
+    'match_id',
     'csv_version',
     'yaml_version',
     'home_team',
@@ -138,6 +143,7 @@ CSV.open(deliveries_outfile, "wb") do |csv|
 
   # write header row
   csv << [
+    'match_id',
     'innings',
     'ball',
     'batting_team',
@@ -170,6 +176,7 @@ CSV.open(deliveries_outfile, "wb") do |csv|
       inning_data['deliveries'].each do |delivery_data|
         delivery_data.each_pair do |ball_no, delivery|
           csv << [
+            match,
             inning_no + 1,
             ball_no,
             inning_data['team'],
