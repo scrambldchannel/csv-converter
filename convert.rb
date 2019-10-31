@@ -130,7 +130,6 @@ CSV.open(deliveries_outfile, "wb") do |csv|
       inning_data['deliveries'].each do |delivery_data|
         delivery_data.each_pair do |ball_no, delivery|
           csv << [
-            'ball',
             inning_no + 1,
             ball_no,
             inning_data['team'],
