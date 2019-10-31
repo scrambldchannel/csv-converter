@@ -38,6 +38,29 @@ end
 # I might change this to output a fixed set of columns but doing this for now
 
 CSV.open(info_outfile, "wb") do |csv|
+  csv << [
+    'csv_version',
+    'yaml_version',
+    'home_team',
+    'away_team',
+    'gender',
+    'start_date',
+    'end_date',
+    'competition',
+    'venue',
+    'city',
+    'neutral_venue',
+    'toss_winner',
+    'toss_decision',
+    'player_of_match',
+    'umpire 1',
+    'umpore 2',
+    'result',
+    'margin_type',
+    'method',
+    'winner',
+    'margin'
+  ]
 
   # write the version line 
   csv << ['version', VERSION]
@@ -130,7 +153,9 @@ CSV.open(deliveries_outfile, "wb") do |csv|
 
   # Now deal with the innings.
   yaml['innings'].each_with_index do |inning, inning_no|
+  
     inning.each_pair do |inning_name, inning_data|
+  
       if inning_data.key?('penalty_runs')
         %w(pre post).each do |type|
           next unless inning_data['penalty_runs'].key?(type)
