@@ -9,12 +9,9 @@ VERSION = '1.2.0'
 file = ARGV[0] || exit
 match = file.split('.')[0]
 
-
 # Assuming the input was a valid yaml file, build file names for the output files
 info_outfile = match + '_info.csv'
 deliveries_outfile = match + '_deliveries.csv'
-
-puts deliveries_outfile
 
 # Load the yaml file.
 yaml = YAML.load_file(file)
@@ -59,82 +56,70 @@ CSV.open(info_outfile, "wb") do |csv|
     'toss_decision',
     'player_of_match',
     'umpire 1',
-    'umpore 2',
+    'umpire 2',
     'result',
     'margin_type',
-    'method',
+   # 'method',
     'winner',
     'margin'
   ]
 
-  # write the version line 
-  csv << ['version', VERSION]
-
-  # Add the info section.
-  yaml['info']['teams'].each do |team|
-    csv << ['info', 'team', team]
-  end
-  csv << ['info', 'gender', yaml['info']['gender']]
-
-  yaml['info']['dates'].each do |date|
-    # This failed for me so I've changed to simply output the date string
-    # csv << ['info', 'date', date.strftime("%Y/%m/%d")]
-    csv << ['info', 'date', date]
-  end
-
-  if yaml['info'].key?('competition')
-    if yaml['info']['competition'] == 'IPL'
-      csv << ['info', 'competition', 'Indian Premier League']
-    elsif yaml['info']['competition'] == 'Big Bash League'
-      csv << ['info', 'competition', yaml['info']['competition']]
+  csv << [
+    match,
+    VERSION,
+    yaml['meta']['version'],
+    yaml['info']['teams'][0],
+    yaml['info']['teams'][1],
+    yaml['info']['gender'],
+    yaml['info']['dates'][0],
+    # this is wrong, will fix later but need to work out how to get last item in array in ruby
+    yaml['info']['dates'][4],            
+    if yaml['info'].key?('competition')
+      yaml['info']['competition']
+    else
+      ''
+    end,
+    yaml['info']['venue'],
+    yaml['info']['city'],
+    if yaml['info'].has_key?('neutral_venue')
+      'True'
+    else
+      'False'
+    end,
+    yaml['info']['toss']['winner'],
+    yaml['info']['toss']['decision'],
+    if yaml['info'].key?('player_of_match')
+      # can we have multiple pom?
+      yaml['info']['player_of_match']
+    end,
+    if yaml['info'].key?('umpires')
+      yaml['info']['umpires'][0]
+    else
+      ''
+    end,
+    if yaml['info'].key?('umpires')
+      yaml['info']['umpires'][1]
+    else
+      ''
+    end,
+    if yaml['info']['outcome'].key?('result')
+      yaml['info']['outcome']['result']
+    else
+      ''
+    end,
+    if yaml['info']['outcome'].key?('winner')
+      yaml['info']['outcome']['winner']
+    else
+      ''
+    end,
+    if yaml['info']['outcome'].key?('by')
+      yaml['info']['outcome']['by']
+    else
+      ''
     end
-  end
 
-  csv << ['info', 'venue', yaml['info']['venue']]
-  csv << ['info', 'city', yaml['info']['city']]
-  if yaml['info'].has_key?('neutral_venue')
-    csv << ['info', 'neutralvenue', 'true']
-  end
+    ]
 
-  csv << ['info', 'toss_winner', yaml['info']['toss']['winner']]
-  csv << ['info', 'toss_decision', yaml['info']['toss']['decision']]
-
-  if yaml['info'].key?('player_of_match')
-    yaml['info']['player_of_match'].each do |pom|
-      csv << ['info', 'player_of_match', pom]
-    end
-  end
-
-  # Officials
-  if yaml['info'].key?('umpires')
-    yaml['info']['umpires'].each do |name|
-      csv << ['info', 'umpire', name]
-    end
-  end
-
-  # Outcome
-  if yaml['info']['outcome'].key?('result')
-    csv << ['info', 'outcome', yaml['info']['outcome']['result']]
-
-    if yaml['info']['outcome'].key?('eliminator')
-      csv << ['info', 'eliminator', yaml['info']['outcome']['eliminator']]
-    elsif yaml['info']['outcome'].key?('bowl_out')
-      csv << ['info', 'bowl_out', yaml['info']['outcome']['bowl_out']]
-    elsif yaml['info']['outcome'].key?('method')
-      csv << ['info', 'method', yaml['info']['outcome']['method']]
-    end
-  end
-
-  if yaml['info']['outcome'].key?('winner')
-    csv << ['info', 'winner', yaml['info']['outcome']['winner']]
-
-    yaml['info']['outcome']['by'].each_pair do |k,v|
-      csv << ['info', "winner_#{k}", v]
-    end
-    if yaml['info']['outcome'].key?('method')
-      csv << ['info', 'method', yaml['info']['outcome']['method']]
-    end
-  end
 
 end
 
