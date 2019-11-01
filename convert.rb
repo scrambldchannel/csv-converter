@@ -162,6 +162,8 @@ CSV.open(deliveries_outfile, "wb") do |csv|
     'bowler',
     'runs',
     'batter_runs',
+    '4s',
+    '6s',
     'noballs',
     'wides',
     'byes',
@@ -170,7 +172,6 @@ CSV.open(deliveries_outfile, "wb") do |csv|
     'how_out',
     'batter_out'
   ]
-
 
   # Now deal with the innings.
   yaml['innings'].each_with_index do |inning, inning_no|
@@ -193,6 +194,16 @@ CSV.open(deliveries_outfile, "wb") do |csv|
 
           runs = delivery['runs']['total']
           batter_runs = delivery['runs']['batsman']
+          if batter_runs = 4
+            fours = 1
+          else
+            fours = 0
+          end
+          if batter_runs = 6
+            sixes = 1
+          else
+            sixes = 0
+          end
           noballs = noballs_for(delivery)
           wides = wides_for(delivery)
           byes = byes_for(delivery)
@@ -209,6 +220,8 @@ CSV.open(deliveries_outfile, "wb") do |csv|
             delivery['non_striker'],
             delivery['bowler'],
             runs,
+            fours,
+            sixes,
             batter_runs,
             noballs,
             wides,
