@@ -35,6 +35,31 @@ def dismissed_players_for(delivery)
   dismissals_for(delivery).map { |dismissal| dismissal['player_out'] }.join(', ')
 end
 
+# return noballs
+def noballs_for(delivery)
+  return 0 unless delivery.key?('extras')
+  return 0 unless delivery['extras'].key?('noballs')
+  delivery['extras']['noballs']
+end
+
+def wides_for(delivery)
+  return 0 unless delivery.key?('extras')
+  return 0 unless delivery['extras'].key?('wides')
+  delivery['extras']['wides']
+end
+
+def byes_for(delivery)
+  return 0 unless delivery.key?('extras')
+  return 0 unless delivery['extras'].key?('byes')
+  delivery['extras']['byes']
+end
+
+def legbyes_for(delivery)
+  return 0 unless delivery.key?('extras')
+  return 0 unless delivery['extras'].key?('legbyes')
+  delivery['extras']['legbyes']
+end
+
 # Write the info csv file
 # I might change this to output a fixed set of columns but doing this for now
 
@@ -135,8 +160,13 @@ CSV.open(deliveries_outfile, "wb") do |csv|
     'batter',
     'non_striker',
     'bowler',
+    'runs',
     'batter_runs',
-    'extra_runs',
+    'noballs',
+    'wides',
+    'byes',
+    'legbyes',
+    'bowler_runs',
     'how_out',
     'batter_out'
   ]
@@ -160,6 +190,16 @@ CSV.open(deliveries_outfile, "wb") do |csv|
 
       inning_data['deliveries'].each do |delivery_data|
         delivery_data.each_pair do |ball_no, delivery|
+
+          runs = delivery['runs']['total']
+          batter_runs = delivery['runs']['batsman']
+          noballs = noballs_for(delivery)
+          wides = wides_for(delivery)
+          byes = byes_for(delivery)
+          legbyes = legbyes_for(delivery)
+          # runs attributal to bowler excludes byes and legbyes
+          bowler_runs = runs - byes - legbyes
+
           csv << [
             match,
             inning_no + 1,
@@ -168,8 +208,13 @@ CSV.open(deliveries_outfile, "wb") do |csv|
             delivery['batsman'],
             delivery['non_striker'],
             delivery['bowler'],
-            delivery['runs']['batsman'],
-            delivery['runs']['extras'],
+            runs,
+            batter_runs,
+            noballs,
+            wides,
+            byes,
+            legbyes,
+            bowler_runs,
             dismissal_methods_for(delivery),
             dismissed_players_for(delivery)
           ]
