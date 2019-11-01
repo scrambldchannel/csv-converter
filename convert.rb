@@ -169,6 +169,8 @@ CSV.open(deliveries_outfile, "wb") do |csv|
     'byes',
     'legbyes',
     'bowler_runs',
+    'wickets',
+    'bowler_wickets',
     'how_out',
     'batter_out'
   ]
@@ -211,6 +213,18 @@ CSV.open(deliveries_outfile, "wb") do |csv|
           # runs attributal to bowler excludes byes and legbyes
           bowler_runs = runs - byes - legbyes
 
+          how_out = dismissal_methods_for(delivery)
+          batter_out = dismissed_players_for(delivery)
+          if how_out != ""
+            wickets = 1
+            if how_out != "run out"
+              bowler_wickets = 1
+            else
+              bowler_wickets = 0
+            end
+            wickets = 0
+          end
+
           csv << [
             match,
             inning_no + 1,
@@ -228,8 +242,10 @@ CSV.open(deliveries_outfile, "wb") do |csv|
             byes,
             legbyes,
             bowler_runs,
-            dismissal_methods_for(delivery),
-            dismissed_players_for(delivery)
+            wickets,
+            bowler_wickets,
+            how_out,
+            batter_out
           ]
         end
       end

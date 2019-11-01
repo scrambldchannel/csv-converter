@@ -38,11 +38,11 @@ The deliveries file looks like this:
 
 ```bash
 $ head -n 5 1152846_deliveries.csv
-match_id,innings,ball,batting_team,batter,non_striker,bowler,runs,batter_runs,4s,6s,noballs,wides,byes,legbyes,bowler_runs,how_out,batter_out
-1152846,1,0.1,Australia,CT Bancroft,DA Warner,JM Anderson,0,0,0,0,0,0,0,0,0,"",""
-1152846,1,0.2,Australia,CT Bancroft,DA Warner,JM Anderson,0,0,0,0,0,0,0,0,0,"",""
-1152846,1,0.3,Australia,CT Bancroft,DA Warner,JM Anderson,0,0,0,0,0,0,0,0,0,"",""
-1152846,1,0.4,Australia,CT Bancroft,DA Warner,JM Anderson,0,0,0,0,0,0,0,0,0,"",""
+match_id,innings,ball,batting_team,batter,non_striker,bowler,runs,batter_runs,4s,6s,noballs,wides,byes,legbyes,bowler_runs,wickets,bowler_wickets,how_out,batter_out
+1152846,1,0.1,Australia,CT Bancroft,DA Warner,JM Anderson,0,0,0,0,0,0,0,0,0,,,"",""
+1152846,1,0.2,Australia,CT Bancroft,DA Warner,JM Anderson,0,0,0,0,0,0,0,0,0,,,"",""
+1152846,1,0.3,Australia,CT Bancroft,DA Warner,JM Anderson,0,0,0,0,0,0,0,0,0,,,"",""
+1152846,1,0.4,Australia,CT Bancroft,DA Warner,JM Anderson,0,0,0,0,0,0,0,0,0,,,"",""
 ```
 
 ## Known issues
@@ -52,5 +52,6 @@ This was really something I adapted quickly to process a specific list of matche
 * Doesn't capture penalty runs
 * Doesn't handle more than one Player or Match
 * Doesn't process result type very intelligently and won't capture ties for example
+* Doesn't deal with multiple wickets per ball (not sure how this can actually happen be honest)
 * Should probably encase string values in quotes but doesn't
 
