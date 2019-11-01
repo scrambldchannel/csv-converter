@@ -70,8 +70,7 @@ CSV.open(info_outfile, "wb") do |csv|
     yaml['info']['teams'][1],
     yaml['info']['gender'],
     yaml['info']['dates'][0],
-    # this is wrong, will fix later but need to work out how to get last item in array in ruby
-    yaml['info']['dates'][4],            
+    yaml['info']['dates'][-1],            
     if yaml['info'].key?('competition')
       yaml['info']['competition']
     else
