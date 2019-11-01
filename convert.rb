@@ -112,7 +112,7 @@ CSV.open(info_outfile, "wb") do |csv|
     yaml['info']['toss']['decision'],
     if yaml['info'].key?('player_of_match')
       # can we have multiple pom?
-      yaml['info']['player_of_match']
+      yaml['info']['player_of_match'][0]
     end,
     if yaml['info'].key?('umpires')
       yaml['info']['umpires'][0]
@@ -194,12 +194,12 @@ CSV.open(deliveries_outfile, "wb") do |csv|
 
           runs = delivery['runs']['total']
           batter_runs = delivery['runs']['batsman']
-          if batter_runs = 4
+          if batter_runs == 4
             fours = 1
           else
             fours = 0
           end
-          if batter_runs = 6
+          if batter_runs == 6
             sixes = 1
           else
             sixes = 0
